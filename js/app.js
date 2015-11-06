@@ -28,6 +28,29 @@ var time = new Time();
 
 $(function() {
 
+    chrome.bookmarks.getTree(function(res) {
+        var bookmarks = res[0]["children"][0]["children"];
+        var bookmark = {};
+        for (var key in bookmarks) {
+            bookmark = bookmarks[key];
+            var $div = $("<div></div>");
+            var $a = $("<a></a>");
+            var $contentDiv = $("<div></div>");
+
+            $a.attr("href", bookmark['url']);
+            $a.addClass("bookmark__link");
+            
+            $div.addClass("bookmarks-list__bookmark");
+
+            $contentDiv.addClass("bookmark__content");
+            $contentDiv.html(bookmark['title'].slice(0,2));
+
+            $div.append($contentDiv);
+            $a.append($div);
+            $(".bookmarks__bookmarks-list").append($a);
+        }
+    });
+
     $("#bgvid").attr("src", "backgrounds/" + getRandomVideoName());
 
     setTimeout(function() {

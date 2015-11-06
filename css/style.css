@@ -56,3 +56,53 @@ body {
 .content__name {
     font-size: 100px;
 }
+
+.bookmarks {
+    padding: 10px;
+    text-align: center;
+    position: relative;
+    top: 20px;
+}
+
+.bookmarks__bookmarks-list {
+    text-align: center;
+    display: inline-block;
+}
+
+.bookmarks-list__bookmark {
+    color: white;
+    display: inline-block;
+    float: left;
+    background-color: rgba(255,255,255,0.5);
+    transition: all 0.2s ease;
+    margin-right: 20px;
+    border-radius: 50%;
+    font-size: 20px;
+    width: 26px;
+    height: 26px;
+    padding: 11px;
+    text-align: center;
+    box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.2);
+}
+
+.bookmarks-list__bookmark:hover {
+    box-shadow: none;
+}
+
+.bookmark__content {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-block;
+    margin: 0px;
+}
+
+.bookmark__link {
+    color: white;
+    text-decoration: none;
+}
+
+.bookmark__link:visited {
+    color: white;
+    text-decoration: none;
+}
