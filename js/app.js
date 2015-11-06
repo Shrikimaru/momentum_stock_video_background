@@ -1,3 +1,11 @@
+function getRandomInt(min, max){
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function getRandomVideoName() {
+    return videoList[getRandomInt(0, videoList.length-1)];
+}
+
 var Time = function() {};
 
 Time.prototype.getCurrentTimeBeauty = function() {
@@ -19,6 +27,9 @@ Time.prototype.getCurrentTimeBeauty = function() {
 var time = new Time();
 
 $(function() {
+
+    $("#bgvid").attr("src", "backgrounds/" + getRandomVideoName());
+
     setTimeout(function() {
         $(".content__time").html(time.getCurrentTimeBeauty());
         $(".main").fadeIn(300, "linear");
