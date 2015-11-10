@@ -30,7 +30,18 @@
 
         </div>
 
+        <script type="text/template" id="context-menu-tmpl">
+            <div class="context_menu">
+                <ul class="action-list">
+                    {{#each actions}}
+                        <li class="action-list__action {{this.actionClass}}"> {{this.name}} </li>
+                    {{/each}}
+                </ul>
+            </div>
+        </script>
+
         <script src="js/bower_components/jquery/dist/jquery.min.js"></script>
+        <script src="js/bower_components/handlebars/handlebars.min.js"></script>
         <script src="js/videoList.js"></script>
         <script src="js/app.js"></script>
     </body>

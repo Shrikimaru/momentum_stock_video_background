@@ -26,10 +26,114 @@ Time.prototype.getCurrentTimeBeauty = function() {
 
 var time = new Time();
 
+var ContextMenu = function(params) {
+    this.params = {
+        isOpened : false
+    };
+
+    this.$menu;
+
+    this.template = Handlebars.compile(params['tmpl'], params['params']);
+};
+
+ContextMenu.prototype.getParam = function(name) {
+    return this.params[name];
+};
+
+ContextMenu.prototype.isOpened = function() {
+    return this.getParam("isOpened");
+};
+
+ContextMenu.prototype.setParam = function(name, value) {
+    this.params[name] = value;
+    return this;
+};
+
+ContextMenu.prototype.render = function(params) {
+    var actions = params['actions'];
+
+    if (this.$menu) {
+        for (var key in actions) {
+            $("." + actions[key]['actionClass']).unbind("click");
+        }
+        this.$menu.remove();
+    }
+
+    this.$menu = $(this.template(params));
+    var self = this;
+
+    for (var key in actions) {
+        $("body").append(this.$menu);
+        $("." + actions[key]['actionClass']).click(function(e) {
+            actions[key]['callback'].call(self, params);
+        });
+    }
+};
+
+ContextMenu.prototype.close = function() {
+    this.$menu.hide();
+    this.params['isOpened'] = false;
+};
+
+ContextMenu.prototype.open = function(params) {
+    if (params['offset']) {
+
+        var positionParams = {
+            "position": "absolute"
+        };
+
+        if (params['offset']['left']) {
+            positionParams['left'] = params['offset']['left'];
+        }
+
+        if (params['offset']['top']) {
+            positionParams['top'] = params['offset']['top'];
+        }
+
+        this.$menu.css(positionParams);
+
+    } else {
+        this.$menu.css({
+            "position" : 'relative',
+            "top" : "",
+            "left" : ""
+        });
+    }
+
+    this.$menu.show();
+    this.params['isOpened'] = true;
+};
+
+var bookmarkContextMenuActions = [
+    {"name" : "Удалить", "actionClass" : "action__delete", "callback" : function(params) {
+        chrome.bookmarks.remove(params['bookmarkId'], function() {
+            $(".bookmarks-list__bookmark[data-id="+params['bookmarkId']+"]").remove();
+        });
+        this.close();
+    }}
+];
+
 $(function() {
+
+    var bookmarkContextMenu = new ContextMenu({
+        "tmpl" : $("#context-menu-tmpl").html(),
+        "params" : {
+            "actions" : bookmarkContextMenuActions
+        }
+    });
+
+    $(document).click(function(e) {
+        if ($(e.target).parents('.context_menu').length) {
+            return true;
+        }
+        if (bookmarkContextMenu.isOpened()) {
+            bookmarkContextMenu.close();
+        }
+    });
 
     chrome.bookmarks.getTree(function(res) {
         var bookmarks = res[0]["children"][0]["children"];
+        console.log(bookmarks);
         var bookmark = {};
         for (var key in bookmarks) {
             bookmark = bookmarks[key];
@@ -41,6 +145,7 @@ $(function() {
             $a.addClass("bookmark__link");
             
             $div.addClass("bookmarks-list__bookmark");
+            $div.attr("data-id", bookmark['id']);
 
             $contentDiv.addClass("bookmark__content");
             $contentDiv.html(bookmark['title'].slice(0,2));
@@ -61,4 +166,32 @@ $(function() {
     setInterval(function() {
         $(".content__time").html(time.getCurrentTimeBeauty());
     }, 1000);
+
+    $(document).contextmenu(function(e) {
+        $target = $(e.target);
+
+        if ($target.parent().hasClass("bookmarks-list__bookmark")) {
+            $target = $target.parent();
+        }
+
+        if ($target.hasClass("bookmarks-list__bookmark")) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            var bookmarkId = $target.attr("data-id");
+
+            var renderParams = {
+                "bookmarkId" : bookmarkId,
+                "actions" : bookmarkContextMenuActions
+            };
+
+            bookmarkContextMenu.render(renderParams);
+            bookmarkContextMenu.open({
+                "offset" : {
+                    "top" : e.clientY,
+                    "left" : e.clientX
+                }
+            });
+        }
+    });
 });
