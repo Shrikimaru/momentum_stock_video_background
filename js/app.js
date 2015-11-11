@@ -16,12 +16,40 @@ Time.prototype.getCurrentTimeBeauty = function() {
     var hours = date.getHours();
     var seconds = date.getSeconds();
 
-    minutes = (minutes < 10 ? "0" + minutes : minutes);
-    hours = (hours < 10 ? "0" + hours : hours);
-    seconds = (seconds < 10 ? "0" + seconds : seconds);
+    minutes = (minutes < 10) ? "0" + minutes : minutes;
+    hours = (hours < 10) ? "0" + hours : hours;
+    seconds = (seconds < 10) ? "0" + seconds : seconds;
 
     time = hours + ":" + minutes + ":" + seconds;
     return time;
+}
+
+Time.prototype.getCurrentDatebeauty = function() {
+    var dateStr = "";
+    var date = new Date;
+
+    var weekDay = date.getDay();
+
+    switch (weekDay) {
+        case 0 : weekDay = "Sunday"; break;
+        case 1 : weekDay = "Monday"; break;
+        case 2 : weekDay = "Tuesday"; break;
+        case 3 : weekDay = "Wednesday"; break;
+        case 4 : weekDay = "Thursday"; break;
+        case 5 : weekDay = "Friday"; break;
+        case 6 : weekDay = "Saturday"; break;
+    }
+
+    var day = date.getDate();
+    day = (day < 10) ? "0" + day : day;
+
+    var month = date.getMonth();
+    month = (month < 10) ? "0" + month : month;
+
+    var year = date.getFullYear();
+
+    date = weekDay + ", " + day + "." + month + "." + year;
+    return date;
 }
 
 var time = new Time();
@@ -160,11 +188,13 @@ $(function() {
 
     setTimeout(function() {
         $(".content__time").html(time.getCurrentTimeBeauty());
+        $(".content__date").html(time.getCurrentDatebeauty());
         $(".main").fadeIn(300, "linear");
     }, 200);
 
     setInterval(function() {
         $(".content__time").html(time.getCurrentTimeBeauty());
+        $(".content__date").html(time.getCurrentDatebeauty());
     }, 1000);
 
     $(document).contextmenu(function(e) {

@@ -128,3 +128,8 @@ body {
 .action-list__action:hover {
     background-color: #c2c2c2;
 }
+
+.content__date {
+    font-size: 18px;
+    margin-top: 31px
+}
