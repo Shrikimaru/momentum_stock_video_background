@@ -176,6 +176,7 @@ $(function() {
             $div.attr("data-id", bookmark['id']);
 
             $contentDiv.addClass("bookmark__content");
+            $a.attr("title", bookmark['title']);
             $contentDiv.html(bookmark['title'].slice(0,2));
 
             $div.append($contentDiv);
